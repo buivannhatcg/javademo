@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.javademo.demo_java_project.model.Employee;
 
-public interface EmployeeDAO {
+public interface EmployeeDAO extends GennericDAO<Employee> {
     List<Employee> getAllEmployees();
     Employee getEmployeeById(int id);
     boolean addEmployee(Employee employee);

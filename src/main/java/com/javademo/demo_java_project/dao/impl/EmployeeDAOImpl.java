@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.javademo.demo_java_project.dao.interfaces.EmployeeDAO;
@@ -72,99 +71,122 @@ public class EmployeeDAOImpl extends AbstractDAO<Employee> implements EmployeeDA
         }
         return employee;
     }
-
     @Override
-    public boolean addEmployee(Employee employee) {
+    public int addEmployee(Employee employee) {
+
         String sql = "INSERT INTO Employees (FirstName, LastName, Email, PhoneNumber, JobID, DepartmentID, Salary, ManagerID) VALUES (?,?,?,?,?,?,?,?)";
-        Connection conn = null;
+        return create(sql,sql, employee.getFirstName(), employee.getLastName(),employee.getEmail(), employee.getPhoneNumber(), employee.getJobID(), employee.getDepartmentID(), employee.getSalary(), employee.getManagerID());
     
-        try {
-            conn = DatabaseConnection.getConnection(); // Khởi tạo conn
-            conn.setAutoCommit(false); // Tắt chế độ auto-commit
-            
-            try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                // Thiết lập thông tin cho PreparedStatement
-                ps.setString(1, employee.getFirstName());
-                ps.setString(2, employee.getLastName());
-                ps.setString(3, employee.getEmail());
-                ps.setString(4, employee.getPhoneNumber());
-                ps.setInt(5, employee.getJobID());
-                ps.setInt(6, employee.getDepartmentID());
-                ps.setDouble(7, employee.getSalary());
-                ps.setInt(8, employee.getManagerID());
-                
-                // Thực hiện cập nhật
-                int rows = ps.executeUpdate();
-                
-                // Gọi commit() nếu mọi thứ thành công
-                conn.commit();
-                
-                return rows > 0;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace(); // Ghi log lỗi
-            if (conn != null) {
-                try {
-                    conn.rollback(); // Rollback nếu có lỗi
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                }
-            }
-            return false;
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.close(); // Đảm bảo kết nối được đóng
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
+
+    // @Override
+    // public boolean addEmployee(Employee employee) {
+    //     String sql = "INSERT INTO Employees (FirstName, LastName, Email, PhoneNumber, JobID, DepartmentID, Salary, ManagerID) VALUES (?,?,?,?,?,?,?,?)";
+    //     Connection conn = null;
+    //     PreparedStatement ps = null;
+    //     try {
+    //         conn = DatabaseConnection.getConnection(); // Khởi tạo conn
+    //         conn.setAutoCommit(false); // Tắt chế độ auto-commit
+    //         ps = conn.prepareStatement(sql);
+    //             // Thiết lập thông tin cho PreparedStatement
+    //             ps.setString(1, employee.getFirstName());
+    //             ps.setString(2, employee.getLastName());
+    //             ps.setString(3, employee.getEmail());
+    //             ps.setString(4, employee.getPhoneNumber());
+    //             ps.setInt(5, employee.getJobID());
+    //             ps.setInt(6, employee.getDepartmentID());
+    //             ps.setDouble(7, employee.getSalary());
+    //             ps.setInt(8, employee.getManagerID());
+                
+    //             // Thực hiện cập nhật
+    //             int rows = ps.executeUpdate();
+                
+    //             // Gọi commit() nếu mọi thứ thành công
+    //             conn.commit();
+                
+    //             return rows > 0;
+    //     } catch (SQLException e) {
+    //         e.printStackTrace(); // Ghi log lỗi
+    //         if (conn != null) {
+    //             try {
+    //                 conn.rollback(); // Rollback nếu có lỗi
+    //             } catch (SQLException e1) {
+    //                 e1.printStackTrace();
+    //             }
+    //         }
+    //         return false;
+    //     } finally {
+    //         if (conn != null) {
+    //             try {
+    //                 conn.close(); // Đảm bảo kết nối được đóng
+    //             } catch (SQLException e) {
+    //                 e.printStackTrace();
+    //             }
+    //         }
+    //     }
+    // }
     
     
+
+    // @Override
+    // public boolean updateEmployee(Employee employee) {
+
+    //     String sql = "UPDATE Employees SET FirstName=?, LastName=?, Email=?, PhoneNumber=?, JobID=?, DepartmentID=?, Salary=?, ManagerID=? WHERE EmployeeID=?";
+
+    //     try {
+    //         Connection conn = DatabaseConnection.getConnection();
+    //         PreparedStatement ps = conn.prepareStatement(sql);
+    //         ps.setString(1, employee.getFirstName());
+    //         ps.setString(2, employee.getLastName());
+    //         ps.setString(3, employee.getEmail());
+    //         ps.setString(4, employee.getPhoneNumber());
+    //         ps.setInt(5, employee.getJobID());
+    //         ps.setInt(6, employee.getDepartmentID());
+    //         ps.setDouble(7, employee.getSalary());
+    //         ps.setInt(8, employee.getManagerID());
+    //         ps.setInt(9, employee.getEmployeeID());
+    //         int rows = ps.executeUpdate();
+    //         conn.commit();
+    //         return rows > 0;
+    //     } catch (SQLException e) {
+    //         e.printStackTrace();
+    //     }
+    //     return false;
+    // }
 
     @Override
     public boolean updateEmployee(Employee employee) {
-
-        String sql = "UPDATE Employees SET FirstName=?, LastName=?, Email=?, PhoneNumber=?, JobID=?, DepartmentID=?, Salary=?, ManagerID=? WHERE EmployeeID=?";
-
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, employee.getFirstName());
-            ps.setString(2, employee.getLastName());
-            ps.setString(3, employee.getEmail());
-            ps.setString(4, employee.getPhoneNumber());
-            ps.setInt(5, employee.getJobID());
-            ps.setInt(6, employee.getDepartmentID());
-            ps.setDouble(7, employee.getSalary());
-            ps.setInt(8, employee.getManagerID());
-            ps.setInt(9, employee.getEmployeeID());
-            int rows = ps.executeUpdate();
-            conn.commit();
-            return rows > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
+        String sql = "UPDATE Employees SET FirstName=?, LastName=?, Email=?, PhoneNumber=?, JobID=?, DepartmentID=?, Salary=?, ManagerID=? WHERE EmployeeID=?";       
+        return update(sql, employee.getFirstName(),
+         employee.getLastName(),
+         employee.getEmail(),
+         employee.getPhoneNumber(),
+         employee.getJobID(),
+         employee.getDepartmentID(),
+         employee.getSalary(),
+         employee.getManagerID(),
+         employee.getEmployeeID());
     }
+    // @Override
+    // public boolean deleteEmployee(int id) {
 
+    //     String sql = "DELETE FROM Employees WHERE EmployeeID =?";
+
+    //     try {
+    //         Connection conn = DatabaseConnection.getConnection();
+    //         PreparedStatement ps = conn.prepareStatement(sql);
+    //         ps.setInt(1, id);
+    //         int rows = ps.executeUpdate();
+    //         return rows > 0;
+    //     } catch (SQLException e) {
+    //         e.printStackTrace();
+    //     }
+    //     return false;
+    // }
     @Override
     public boolean deleteEmployee(int id) {
-
         String sql = "DELETE FROM Employees WHERE EmployeeID =?";
-
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, id);
-            int rows = ps.executeUpdate();
-            return rows > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
+        return update(sql, id);
     }
 
 }
